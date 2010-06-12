@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 14.0-b16 (Sun Microsystems Inc.)
+Built-By: steve
+Main-Class: ca.uregina.thg.client.TreasureHuntGame
+Implementation-Version: 1.00-b111
+Built-Date: 2010-06-09 22:47:51
+Class-Path: lib/jinput.jar lib/jnlp.jar lib/jogg-0.0.7.jar lib/jorbis-
+ 0.0.15.jar lib/lwjgl.jar lib/mina-core-1.1.0.jar lib/sgs-client.jar l
+ ib/sgs-shared-1.12.jar lib/slf4j-api-1.4.0.jar lib/slf4j-jdk14-1.4.0.
+ jar lib/slick.jar
+
