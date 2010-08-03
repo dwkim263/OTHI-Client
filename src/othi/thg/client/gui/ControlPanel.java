@@ -7,7 +7,7 @@ import org.newdawn.slick.Image;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.SlickException;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 
 /**
  * control panel
@@ -15,7 +15,7 @@ import othi.thg.client.GameDefault;
  */
 public class ControlPanel extends SuiLabel {
     private static final int DIALOGUE_HIST_HEIGHT = 400;
-    private static final int PANEL_HEIGHT = 24;
+    public static final int PANEL_HEIGHT = 24;
     
     private MessageLogWindow messageLogWindow = null;
     private SuiTextArea messageLogArea = null;
@@ -35,7 +35,7 @@ public class ControlPanel extends SuiLabel {
         this.font = font;
             
         this.pack();
-        this.setLocation(0, GameDefault.SCREEN_HEIGHT - PANEL_HEIGHT);
+        this.setLocation(0, THGClientDefault.get().getViewHeightInPixels());
 
         buildHelloButton();
         buildHelpButton();

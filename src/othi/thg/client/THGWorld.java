@@ -25,8 +25,7 @@ import org.newdawn.slick.openal.SoundStore;
 import org.newdawn.slick.util.Log;
 import org.newdawn.slick.state.transition.EmptyTransition;
 
-import othi.thg.client.GameDefault.GameState;
-import othi.thg.client.GameDefault.Terrain;
+import othi.thg.client.THGClientDefault.GameState;
 import othi.thg.client.entities.*;
 import othi.thg.client.entities.sprites.FoodSprite;
 import othi.thg.client.entities.sprites.MonsterSprite;
@@ -52,9 +51,9 @@ import mdes.slick.sui.suiList.*;
  * displaying game
  * @author Dong Won Kim
  */
-public class THGground extends BasicGameState {
+public class THGWorld extends BasicGameState {
 	
-	private static final Logger logger = Logger.getLogger(THGground.class.getName());
+	private static final Logger logger = Logger.getLogger(THGWorld.class.getName());
 
 	public static final int ID = 2;
 
@@ -110,17 +109,6 @@ public class THGground extends BasicGameState {
 
 	private boolean gameInitialized = false;
 
-	/** The width of the display in tiles */
-	private int widthInTiles;
-	/** The height of the display in tiles */
-	private int heightInTiles;
-
-	/** The offset from the centre of the screen to the top edge in tiles */
-	private int topOffsetInTile;
-
-	/** The offset from the centre of the screen to the left edge in tiles */
-	private int leftOffsetInTile;        
-
 	DJKPathFinder pathfinder = null;
 
 	private int pathIndex = 0;
@@ -165,7 +153,7 @@ public class THGground extends BasicGameState {
 	private List<NoticeWindow> questCompletedNoticeWindows = new LinkedList<NoticeWindow>();
 	private List<NoticeWindow> noticeWindows = new LinkedList<NoticeWindow>();    
 
-	public THGground() {
+	public THGWorld() {
 
 	}
 
@@ -640,16 +628,11 @@ public class THGground extends BasicGameState {
 		int mapHeight = thgMap.getHeight();		
 
 		pathfinder = new DJKPathFinder(mapWidth, mapHeight);   
-		
-		widthInTiles = container.getWidth() / GameDefault.TILEWIDTH;
-		heightInTiles = container.getHeight() / GameDefault.TILEHEIGHT;
-		topOffsetInTile = heightInTiles / 2;
-		leftOffsetInTile = widthInTiles / 2;
 
 		// force load of shot in init
 		// new ShotSprite(0, 0, 0, 0);   		
 
-		Log.info("PlayStage : Window Dimensions in Tiles: "+widthInTiles+"x"+heightInTiles + " number of tilesets size => " + thgMap.tileSets.size());
+		Log.info("PlayStage : Number of tilesets size => " + thgMap.tileSets.size());
 	}    
 
 	@Override
@@ -794,7 +777,7 @@ public class THGground extends BasicGameState {
 			sendToServer(Commands.portalCommand(getMyID(), THGClient.get().getPlaceId(), portals.get(id).getName()));
 		} else {
 			sendToServer(Commands.moveForwardCommand(getMyID(), THGClient.get().getPlaceId(), playerSprite.getPosX(), playerSprite.getPosY(), inputDirection));
-			playerSprite.walk(inputDirection);     
+			playerSprite.walk(inputDirection);
 		}
 	}
 	
@@ -836,7 +819,7 @@ public class THGground extends BasicGameState {
 	private Path findPath(int playerX, int playerY, int dx, int dy){
 		initializePath();
 		return pathfinder.findPath(playerX , playerY, dx, dy, 
-				GameDefault.PATH_SEARCH_DEPTH);
+				THGClientDefault.PATH_SEARCH_DEPTH);
 	}
 
 	@Override
@@ -881,12 +864,13 @@ public class THGground extends BasicGameState {
 	}    
 
 
-	private float[] convertToTiledCoordinate(float playerX, float playerY, int x, int y) {        
-		float coordinate[] = new float[2];
+	private float[] convertToTiledCoordinate(float playerX, float playerY, float x, float y) {
+		
+		float coordinate[] = getTranslateXY(playerX, playerY);
 
-		coordinate[0] = ((playerX - container.getWidth() / (2 * GameDefault.TILEWIDTH) ) + x / GameDefault.TILEWIDTH);
-		coordinate[1] = ((playerY - container.getHeight() / (2 * GameDefault.TILEHEIGHT) )+ y / GameDefault.TILEHEIGHT);       
-
+		coordinate[0] = (x - coordinate[0]) / THGClientDefault.TILEWIDTH;
+		coordinate[1] = (y - coordinate[1]) / THGClientDefault.TILEHEIGHT;       
+		
 		return coordinate;
 	}
 
@@ -909,8 +893,12 @@ public class THGground extends BasicGameState {
 		float myY = mySprite.getPosY();
 
 		float coordinate[] = convertToTiledCoordinate(myX, myY, x, y);
-		int tx = (int) coordinate[0];
-		int ty = (int) coordinate[1];
+		float tx = coordinate[0];
+		float ty = coordinate[1];
+		
+		if (tx > THGTerrain.get().getWidth() || ty > THGTerrain.get().getHeight()) {
+			return;
+		}
 
 		if (!THGTerrain.get().collides(tx, ty)) {
 			MonsterSprite monster = getMonsterAt(tx,ty);         
@@ -924,11 +912,11 @@ public class THGground extends BasicGameState {
 				clickedSpot.setClick(tx,ty);
 
 				//find the best path                 
-				Path path = findPath((int) myX, (int) myY, tx, ty);
+				Path path = findPath((int) myX, (int) myY, (int) tx, (int)ty);
 				if (path != null) mySprite.setPath(path);
 			}
 		} else if (THGTerrain.get().isTreasureAt(tx, ty) && isWithinRange(tx, ty, 1) ) {
-			findTreasure(tx, ty);
+			findTreasure((int) tx, (int) ty);
 		}
 	}
 
@@ -1128,59 +1116,82 @@ public class THGground extends BasicGameState {
 			}
 		}
 		return null;
-	}    
-
-	private void drawBoard(PlayerSprite mySprite, float playerX, float playerY, int startTilePosX, int startTilePosY, int startMapLayer, int endMapLayer){
-		// caculate the offset of the player from the edge of the tile. As the player moves around this
-		// varies and this tells us how far to offset the tile based rendering to give the smooth
-		// motion of scrolling
-		int playerTileOffsetX = (int) (((int) playerX - playerX) * GameDefault.TILEWIDTH);
-		int playerTileOffsetY = (int) (((int) playerY - playerY) * GameDefault.TILEHEIGHT);             
-
-		for (int mapLayer = startMapLayer; mapLayer < endMapLayer; ++mapLayer) {
-			THGTerrain.get().render(playerTileOffsetX - (mySprite.getWidth() / 2),
-					playerTileOffsetY - (mySprite.getHeight() / 2),
-					startTilePosX,
-					startTilePosY,
-					widthInTiles+1, heightInTiles+1,mapLayer);                
+	}    	
+	
+	private int getBeginPosX(float playerX){
+		//start position in tiles to draw map
+		float beginPosX = playerX - THGClientDefault.get().getLeftOffset();
+		if (THGTerrain.get().getWidth() < THGClientDefault.get().getViewWidth() || beginPosX < 0) {
+			beginPosX = 0;
+		} else if ((beginPosX + THGClientDefault.get().getViewWidth()) > THGTerrain.get().getWidth()) {
+			beginPosX = THGTerrain.get().getWidth() - THGClientDefault.get().getViewWidth();
+		}
+		
+		return (int) beginPosX;
+	}
+	
+	private int getBeginPosY(float playerY){
+		//start position in tiles to draw map		
+		float beginPosY = playerY - THGClientDefault.get().getTopOffset();  
+		if (THGTerrain.get().getHeight() < THGClientDefault.get().getViewHeight() || beginPosY < 0) {
+			beginPosY = 0;
+		} else if ((beginPosY + THGClientDefault.get().getViewHeight()) > THGTerrain.get().getHeight()) {
+			beginPosY = THGTerrain.get().getHeight() - THGClientDefault.get().getViewHeight();				
+		}
+		
+		return (int) beginPosY;
+	}	
+	
+	/** calculate the offset of the player from the edge of the tile. 
+	 * As the player moves around, this varies and this tells us
+	 * how far to offset the tile based rendering to give
+	 * the smooth motion of scrolling.
+	*/
+	private void drawBoard(int beginPosX, int beginPosY, int startMapLayer, int endMapLayer)
+	{
+		for (int mapLayer = startMapLayer; mapLayer <= endMapLayer; ++mapLayer) {
+			THGTerrain.get().render(0, 0,
+					beginPosX, beginPosY,
+					THGClientDefault.get().getViewWidth(), 
+					THGClientDefault.get().getViewHeight(), mapLayer);                
 		}        
 	}
 
-	private void drawTerrain(float playerX, float playerY, int startTilePosX, int startTilePosY, Graphics g)
+	private void drawGameObjects(int beginPosX, int beginPosY, Graphics g)
 	{		
 		TiledMap thgMap = THGTerrain.get().getThgMap();
-				
-		int beginTerrainMapX = startTilePosX - 1;
+/*				
+		int beginTerrainMapX = beginPosX - 1;
 		if ( beginTerrainMapX < 0) beginTerrainMapX = 0;
-		int beginTerrainMapY = startTilePosY - 1;            
+		int beginTerrainMapY = beginPosY - 1;            
 		if ( beginTerrainMapY < 0) beginTerrainMapY = 0;            
 
-		int endTerrainMapX = (int) playerX + leftOffsetInTile + 1;
+		int endTerrainMapX = (int) (playerX + THGClientDefault.get().getLeftOffset()) + 1;
 		if (endTerrainMapX >= thgMap.width) endTerrainMapX = thgMap.width;
-		int endTerrainMapY = (int) playerY + topOffsetInTile + 1;
+		int endTerrainMapY = (int) (playerY + THGClientDefault.get().getTopOffset()) + 1;
 		if (endTerrainMapY >= thgMap.height) endTerrainMapY = thgMap.height;
 
 		for (int x = beginTerrainMapX; x < endTerrainMapX; x++) {
 			for (int y = beginTerrainMapY; y < endTerrainMapY; y++) {
 				switch (THGTerrain.get().getTerrain(x, y)) {     
 				case MONSTERTOMB:
-					int xOrigin = x * GameDefault.TILEWIDTH;
-					int yOrigin = y * GameDefault.TILEHEIGHT - (GameDefault.TILEHEIGHT / 3); 
+					int xOrigin = x * THGClientDefault.TILEWIDTH;
+					int yOrigin = y * THGClientDefault.TILEHEIGHT - (THGClientDefault.TILEHEIGHT / 3); 
 					monsterTombTile.draw(xOrigin
-							+ ((GameDefault.TILEWIDTH - monsterTombTile
+							+ ((THGClientDefault.TILEWIDTH - monsterTombTile
 									.getWidth()) / 2),
 									yOrigin
-									+ ((GameDefault.TILEHEIGHT - monsterTombTile
+									+ ((THGClientDefault.TILEHEIGHT - monsterTombTile
 											.getHeight()) / 2));
 					break;
 				case PLAYERTOMB:
-					xOrigin = x * GameDefault.TILEWIDTH;
-					yOrigin = y * GameDefault.TILEHEIGHT - (GameDefault.TILEHEIGHT / 3);
+					xOrigin = x * THGClientDefault.TILEWIDTH;
+					yOrigin = y * THGClientDefault.TILEHEIGHT - (THGClientDefault.TILEHEIGHT / 3);
 					playerTombTile.draw(xOrigin
-							+ ((GameDefault.TILEWIDTH - monsterTombTile
+							+ ((THGClientDefault.TILEWIDTH - monsterTombTile
 									.getWidth()) / 2),
 									yOrigin
-									+ ((GameDefault.TILEHEIGHT - monsterTombTile
+									+ ((THGClientDefault.TILEHEIGHT - monsterTombTile
 											.getHeight()) / 2));
 					break;
 				case TREASURE:
@@ -1191,7 +1202,7 @@ public class THGground extends BasicGameState {
 				}
 			}
 		}
-
+ */
          
 		/*
 		 * draw food
@@ -1292,8 +1303,8 @@ public class THGground extends BasicGameState {
 	public boolean hasMouseOverSprite(){
 		if (mouseOverSprite != null) mouseOverSprite.setMouseOver(false);
 
-		int x = input.getMouseX();
-		int y = input.getMouseY();
+		float x = input.getMouseX();
+		float y = input.getMouseY();
 
 		PlayerSprite playerSprite = players.get(getMyID());
 		if (playerSprite == null) return false;
@@ -1348,6 +1359,44 @@ public class THGground extends BasicGameState {
 		}
 		return false;
 	}
+	
+	private float[] getTranslateXY(float playerX, float playerY) {
+		float coordinate[] = new float[2];
+		
+		float tx = 0;
+		float ty = 0;
+		
+		float leftOffset = THGClientDefault.get().getViewWidthInPixels() / 2;
+		float topOffset = THGClientDefault.get().getViewHeightInPixels() / 2;
+
+		float mapWidth = THGTerrain.get().getWidth() * THGClientDefault.TILEWIDTH;
+		float mapHeight = THGTerrain.get().getHeight() * THGClientDefault.TILEHEIGHT;
+		
+		if (mapWidth >= THGClientDefault.get().getViewWidthInPixels()) {
+			float distanceToLeftmost = playerX * THGClientDefault.TILEWIDTH;		
+			float distanceToRightmost = mapWidth - distanceToLeftmost;
+			if (leftOffset <= distanceToLeftmost && leftOffset <= distanceToRightmost) {			
+				tx = leftOffset - distanceToLeftmost;
+			} else if (leftOffset > distanceToRightmost) {		
+				tx = THGClientDefault.get().getViewWidthInPixels() - mapWidth;
+			}			
+		}
+		
+		if (mapHeight >= THGClientDefault.get().getViewHeightInPixels()) {
+			float distanceToUppermost = playerY * THGClientDefault.TILEHEIGHT;				
+			float distanceToUndermost = mapHeight - distanceToUppermost;	
+			if (topOffset <= distanceToUppermost && topOffset <= distanceToUndermost) {			
+				ty = topOffset - distanceToUppermost;
+			} else if (topOffset > distanceToUndermost){
+				ty =  THGClientDefault.get().getViewHeightInPixels() - mapHeight;
+			}			
+		}
+		
+		coordinate[0] = tx;
+		coordinate[1] = ty;
+		
+		return coordinate;
+	}
 
 	@Override    
 	public void render(GameContainer container, StateBasedGame game, Graphics g) throws SlickException
@@ -1360,34 +1409,31 @@ public class THGground extends BasicGameState {
 		GameState state = THGClient.get().getGameState();
 
 		if (state == GameState.PLAYING) {                        
-			float playerX = (int) mySprite.getPosX();
-			float playerY = (int) mySprite.getPosY();
+			float playerX = mySprite.getPosX();
+			float playerY = mySprite.getPosY();
 
-			//start position in tile to draw map
-			int startTilePosX = (int) playerX - leftOffsetInTile - 1;
-			int startTilePosY = (int) playerY - topOffsetInTile - 1;  
+			int beginPosX = getBeginPosX(playerX);
+			int beginPosY = getBeginPosY(playerY);
+			
+			drawBoard(beginPosX, beginPosY, 0, 2);		
+									
+			float coordinate[] = getTranslateXY(playerX, playerY);
 
-			drawBoard(mySprite, playerX, playerY, startTilePosX, startTilePosY, 0, 3);
+			g.translate(coordinate[0], coordinate[1]);
 
-			// draw entities relative to the player that must appear in the centre of the screen
-			float tx = (container.getWidth()/ 2) - (playerX * GameDefault.TILEWIDTH);
-			float ty = (container.getHeight()/ 2) - (playerY * GameDefault.TILEHEIGHT);   
-			g.translate(tx, ty);
-
-			drawTerrain( playerX, playerY, startTilePosX, startTilePosY, g); 
-			drawClickedSpot();            
+			drawGameObjects(beginPosX, beginPosY, g); 
+			drawClickedSpot();
 
 			g.resetTransform();
-
-			drawBoard(mySprite, playerX, playerY, startTilePosX, startTilePosY, 3, 5);            
+			drawBoard(beginPosX, beginPosY, 3, 4);            
 
 			//drawing windows
 			drawWindows(g);
 
 			statusPanel.render(container, g);
 			controlPanel.render(container, g);
-
-			drawCursor();
+			
+			drawCursor();			
 		}
 
 		currentTime = System.nanoTime();
@@ -1401,7 +1447,7 @@ public class THGground extends BasicGameState {
 		} 
 		lastTime = currentTime;
 	}
-
+	
 	public void processOneMessage() {
 
 		ConcurrentLinkedQueue<ByteBuffer> inputQueue = THGClient.get().getInputQueue();

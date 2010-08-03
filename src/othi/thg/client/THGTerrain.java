@@ -1,6 +1,6 @@
 package othi.thg.client;
 
-import othi.thg.client.GameDefault.Terrain;
+import othi.thg.client.THGClientDefault.Terrain;
 
 /**
  * managing a game map
@@ -42,7 +42,7 @@ public class THGTerrain {
 		this.height = thgMap.height;
 	}
 
-	public Collision getCollisionManger() {
+	public Collision getCollisionManger() {	
 		return collisionManger;
 	}
 

@@ -6,12 +6,12 @@ package othi.thg.client.pathFinding;
  * @author Kevin Glass
  * @author Dong Won Kim
  */
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 
 public class Path {
         private static final long serialVersionUID = 20070812112327L;     
 	/** The path coordinates */
-	private Step[] path = new Step [GameDefault.PATH_SEARCH_DEPTH];
+	private Step[] path = new Step [THGClientDefault.PATH_SEARCH_DEPTH];
 	/** The size of the path */
 	private int size;
 	

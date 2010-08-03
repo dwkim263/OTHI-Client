@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import othi.thg.client.GameDefault.GameState;
+import othi.thg.client.THGClientDefault.GameState;
 import othi.thg.client.entities.Quest;
 import othi.thg.client.entities.sprites.PlayerSprite;
 import othi.thg.client.entities.sprites.THGSprite;

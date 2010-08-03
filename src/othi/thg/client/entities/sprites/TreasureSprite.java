@@ -7,7 +7,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.util.Log;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 
 /**
  * Treasure sprite
@@ -15,8 +15,8 @@ import othi.thg.client.GameDefault;
  */
 public class TreasureSprite extends THGSprite {
     private static final long TREASUREOPENNS = 500 * 1000 * 1000 * 1000;    
-    private static final int WIDTH = GameDefault.TILEWIDTH; 
-    private static final int HEIGHT = GameDefault.TILEHEIGHT;         
+    private static final int WIDTH = THGClientDefault.TILEWIDTH; 
+    private static final int HEIGHT = THGClientDefault.TILEHEIGHT;         
     private SpriteSheet[] treasureSpriteSheets = new SpriteSheet[1];
     
     /** Topic ID = Quest ID */
@@ -69,8 +69,8 @@ public class TreasureSprite extends THGSprite {
     
     @Override
     public void draw(Graphics g) {
-            int x = (int)(GameDefault.TILEWIDTH * getPosX() - getWidth()/4) ;
-            int y = (int)(GameDefault.TILEHEIGHT * getPosY() - 4*getHeight()/10);                        
+            int x = (int)(THGClientDefault.TILEWIDTH * getPosX() - getWidth()/4) ;
+            int y = (int)(THGClientDefault.TILEHEIGHT * getPosY() - 4*getHeight()/10);                        
       /*      x = x  - getWidth() + GameScreen.TILEHEIGHT ;     // - centroids[getCurrentSheet()][0];
             y = y  - getHeight() + (GameScreen.TILEHEIGHT /2) ;     // - centroids[getCurrentSheet()][1];                
 

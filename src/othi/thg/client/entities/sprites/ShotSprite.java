@@ -6,7 +6,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.util.Log;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 import othi.thg.client.entities.sprites.THGSprite.SpriteState;
 import othi.thg.common.Commands.Direction;
 
@@ -61,10 +61,10 @@ public class ShotSprite extends THGSprite {
 			}
 //			int currImgNum = (int) ((System.nanoTime() - animationRootTime) / (ANIMPERIODNS / currentFc));
 			Image img = getCurrentImage();
-			int x = (int) (GameDefault.TILEWIDTH * getPosX());
-			int y = (int) (GameDefault.TILEHEIGHT * getPosY());
-			x += (GameDefault.TILEWIDTH / 2) - shotCentroids[getCurrentSheet()][0];
-			y += (GameDefault.TILEHEIGHT / 2) - shotCentroids[getCurrentSheet()][1];
+			int x = (int) (THGClientDefault.TILEWIDTH * getPosX());
+			int y = (int) (THGClientDefault.TILEHEIGHT * getPosY());
+			x += (THGClientDefault.TILEWIDTH / 2) - shotCentroids[getCurrentSheet()][0];
+			y += (THGClientDefault.TILEHEIGHT / 2) - shotCentroids[getCurrentSheet()][1];
 			// move for bullet flight
 			x += (int)((deltaX*getWidth())*elapsedTime/ANIMPERIODNS);
 			y += (int)((deltaY*getHeight())*elapsedTime/ANIMPERIODNS);

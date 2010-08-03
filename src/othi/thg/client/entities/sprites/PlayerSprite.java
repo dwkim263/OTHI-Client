@@ -8,7 +8,7 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Image;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 import othi.thg.client.OutfitStore;
 import othi.thg.client.OutfitStore.Part;
 import othi.thg.client.entities.sprites.THGSprite.SpriteState;
@@ -69,11 +69,11 @@ public class PlayerSprite extends THGSprite {
     @SuppressWarnings("fallthrough")
     @Override
     public void draw(Graphics g) {
-            float x = GameDefault.TILEWIDTH * getPosX();
-            float y = GameDefault.TILEHEIGHT * getPosY();                      
-            x = x  - getWidth() + GameDefault.TILEHEIGHT ;     // - centroids[getCurrentSheet()][0];
-            y = y  - getHeight() + (GameDefault.TILEHEIGHT /2) ;     // - centroids[getCurrentSheet()][1];                
-
+            float x = THGClientDefault.TILEWIDTH * getPosX();
+            float y = THGClientDefault.TILEHEIGHT * getPosY();
+            x = x + THGClientDefault.TILEWIDTH - getWidth();  
+            y = y + THGClientDefault.TILEHEIGHT - getHeight() ;               
+                     
             switch (getSpriteState()) {
             case ANIMATING: // fall-through case on purpose
                 int currentFc = getCurrentFrameCount(0);
@@ -83,7 +83,7 @@ public class PlayerSprite extends THGSprite {
                 } else {
                     setCurrentImage(currImgNum);
                 }
-                    // fall throguh to REST to render
+                    // fall through to REST to render
             case REST:   
             case LEVELUP:
             case LEVELDOWN:                

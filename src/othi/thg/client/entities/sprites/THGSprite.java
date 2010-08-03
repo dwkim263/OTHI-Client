@@ -9,7 +9,7 @@ import org.newdawn.slick.Font;
 import org.newdawn.slick.SpriteSheet;
 import org.newdawn.slick.SlickException;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 import othi.thg.client.OutfitStore.Part;
 import othi.thg.client.entities.THGObject;
 import othi.thg.client.pathFinding.Path;
@@ -183,11 +183,11 @@ public abstract class THGSprite extends THGObject {
 
     @SuppressWarnings("fallthrough")
     public void draw(Graphics g) {
-            int x = (int)(GameDefault.TILEWIDTH * getPosX());
-            int y = (int)(GameDefault.TILEHEIGHT * getPosY());                        
-            x = x  - getWidth() + GameDefault.TILEHEIGHT ;     // - centroids[getCurrentSheet()][0];
-            y = y  - getHeight() + (GameDefault.TILEHEIGHT /2) ;     // - centroids[getCurrentSheet()][1];                
-
+            int x = (int)(THGClientDefault.TILEWIDTH * getPosX());
+            int y = (int)(THGClientDefault.TILEHEIGHT * getPosY());  
+            x = x + THGClientDefault.TILEWIDTH - getWidth();  
+            y = y + THGClientDefault.TILEHEIGHT - getHeight(); 
+            
             switch (getSpriteState()) {
             case ANIMATING: // fall-through case on purpose
                 int currentFc = getCurrentFrameCount();

@@ -2,7 +2,7 @@ package othi.thg.client.gui;
 
 import org.newdawn.slick.AngelCodeFont;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 import mdes.slick.sui.*;
 import mdes.slick.sui.event.*;
 
@@ -31,7 +31,7 @@ public class ScrollCloseWindow extends ScrollWindow {
 
     public ScrollCloseWindow(AngelCodeFont font, int width, int height) {
         super(font, width, height);                   
-        int x = GameDefault.SCREEN_WIDTH /2 - width /2 - 5;
+        int x = THGClientDefault.SCREEN_WIDTH /2 - width /2 - 5;
      //   int y = GameDefault.SCREEN_HEIGHT /2 - height/2;
         int y = 100;
         setLocation(x, y);
