@@ -15,9 +15,9 @@ public class OutfitStore {
 
 	private static OutfitStore  sharedInstance = null;
         
-        private static final int WIDTH = (int) (GameDefault.TILEWIDTH * 1.5); 
+        private static final int WIDTH = (int) (THGClientDefault.TILEWIDTH * 1.5); 
 
-        private static final int HEIGHT = GameDefault.TILEHEIGHT * 2; 
+        private static final int HEIGHT = THGClientDefault.TILEHEIGHT * 2; 
                 
         public static enum Part {
             BASE, DRESS, HEAD, HAIR

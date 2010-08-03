@@ -13,8 +13,8 @@ import othi.thg.client.*;
  * @author Dong Won Kim
  */
 public class FoodSprite extends THGSprite {
-    private static final int WIDTH = GameDefault.TILEWIDTH; 
-    private static final int HEIGHT = GameDefault.TILEHEIGHT;    
+    private static final int WIDTH = THGClientDefault.TILEWIDTH; 
+    private static final int HEIGHT = THGClientDefault.TILEHEIGHT;    
     private static SpriteSheet[] foodSpriteSheets = new SpriteSheet[1];
 
     private int attractionPoint;

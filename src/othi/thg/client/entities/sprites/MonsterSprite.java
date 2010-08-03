@@ -14,8 +14,8 @@ import othi.thg.common.Commands.Direction;
  * @author Dong Won Kim
  */
 public class MonsterSprite extends THGSprite {
-        private static final int WIDTH = GameDefault.TILEWIDTH; 
-        private static final int HEIGHT = GameDefault.TILEHEIGHT;    
+        private static final int WIDTH = THGClientDefault.TILEWIDTH; 
+        private static final int HEIGHT = THGClientDefault.TILEHEIGHT;    
 	private static SpriteSheet[] monsterSpriteSheets = new SpriteSheet[1];
 	
 	public MonsterSprite(String name, float x, float y, Direction direction, String imgRef) {          

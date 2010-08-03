@@ -6,8 +6,10 @@ package othi.thg.client.entities;
  */
 public abstract class THGObject {
 	
+	//x-th tile in the game map; the tile number starts zero.
     protected float posX;
 
+	//y-th tile in the game map; the tile number starts zero.
     protected float posY;
 
     protected int myId;

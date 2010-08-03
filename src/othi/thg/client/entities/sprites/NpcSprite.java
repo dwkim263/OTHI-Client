@@ -14,8 +14,8 @@ import othi.thg.common.Commands.Direction;
  * @author Dong Won Kim
  */
 public class NpcSprite extends THGSprite {
-        private static final int WIDTH = (int) (GameDefault.TILEWIDTH * 1.5); 
-        private static final int HEIGHT = GameDefault.TILEHEIGHT * 2;         
+        private static final int WIDTH = (int) (THGClientDefault.TILEWIDTH * 1.5); 
+        private static final int HEIGHT = THGClientDefault.TILEHEIGHT * 2;         
 	private SpriteSheet[] npcSpriteSheets = new SpriteSheet[1];
 	
 	public NpcSprite(String imgRef, int x, int y, Direction direction) {

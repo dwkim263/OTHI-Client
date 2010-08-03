@@ -4,7 +4,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Sound;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 
 /**
  * managing clicked spot
@@ -55,8 +55,8 @@ public class ClickedSpot extends AbstractCursor {
     
     @Override
     public void draw(){                    
-        float x = GameDefault.TILEWIDTH * getPosX();
-        float y = GameDefault.TILEHEIGHT * getPosY();                     
+        float x = THGClientDefault.TILEWIDTH * getPosX();
+        float y = THGClientDefault.TILEHEIGHT * getPosY();                     
         x = x - (getWidth()/2);
         y = y - (getHeight()/2);
         img.draw(x, y);           

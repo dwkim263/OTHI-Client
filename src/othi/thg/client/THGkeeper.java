@@ -26,7 +26,7 @@ import org.newdawn.slick.state.transition.EmptyTransition;
 import org.newdawn.slick.opengl.CursorLoader;
 import org.lwjgl.input.Cursor;
 
-import othi.thg.client.GameDefault.GameState;
+import othi.thg.client.THGClientDefault.GameState;
 import othi.thg.client.OutfitStore.Part;
 import othi.thg.client.entities.sprites.PlayerSprite;
 import othi.thg.common.CommandListener;
@@ -604,7 +604,7 @@ public class THGkeeper extends BasicGameState implements ComponentListener {
         } catch (SlickException e) {            
             Log.error("Starting game got an error!", e);
         }     
-        game.enterState(THGground.ID,  new EmptyTransition(), new EmptyTransition());
+        game.enterState(THGWorld.ID,  new EmptyTransition(), new EmptyTransition());
     }      
 
     public void processOneMessage() {

@@ -9,7 +9,7 @@ import mdes.slick.sui.*;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.Color;
 
-import othi.thg.client.GameDefault;
+import othi.thg.client.THGClientDefault;
 
 /**
  * player's status window
@@ -28,7 +28,7 @@ public class StatusPanel extends SuiLabel {
         super(img);
         
         this.pack();
-        this.setLocation(GameDefault.SCREEN_WIDTH - this.getWidth() -5 , 10);
+        this.setLocation(THGClientDefault.SCREEN_WIDTH - this.getWidth() -5 , 10);
         this.setGlassPane(true);
 
         //label foreground

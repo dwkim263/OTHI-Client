@@ -20,7 +20,7 @@
     <target name="compile" depends="clean">
         <mkdir dir="${build.classes.dir}" />    	
         <javac srcdir="${src.dir}" destdir="${build.classes.dir}" 
-        	debug="true" debuglevel="lines, vars, and source" >
+        	debug="true" debuglevel="lines,vars,source" >
         	<classpath  refid="project.classpath"/>
         </javac> 	    
 		<copy todir="${build.classes.dir}">

@@ -28,7 +28,7 @@ public class TreasureHuntGame extends StateBasedGame {
     @Override
     public void initStatesList(GameContainer container) {
         addState(new THGkeeper());
-        addState(new THGground());
+        addState(new THGWorld());
     }
 
     public static void main(String[] args) {
@@ -41,7 +41,7 @@ public class TreasureHuntGame extends StateBasedGame {
         try {
             AppGameContainer container = new AppGameContainer(new TreasureHuntGame());
 
-            container.setDisplayMode(GameDefault.SCREEN_WIDTH, GameDefault.SCREEN_HEIGHT, false);
+            container.setDisplayMode(THGClientDefault.SCREEN_WIDTH, THGClientDefault.SCREEN_HEIGHT, false);
             container.start();           
         } catch (SlickException e){
             e.printStackTrace();
