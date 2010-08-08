@@ -272,8 +272,8 @@ public class Commands {
 		return bytes;
 	}    
 
-	public static byte[] addPortalCommand(int id, int placeId, String portalName, float x, float y) {
-		byte[] bytes = new byte[4 * 6 + portalName.length()];
+	public static byte[] addPortalCommand(int id, int placeId, String portalName, float x, float y, int isOneWay) {
+		byte[] bytes = new byte[4 * 7 + portalName.length()];
 		ByteBuffer buff = ByteBuffer.wrap(bytes);
 		buff.putInt(OpCode.ADDPORTAL.ordinal());
 		buff.putInt(id);
@@ -281,7 +281,8 @@ public class Commands {
 		buff.putInt(portalName.length());
 		buff.put(portalName.getBytes());
 		buff.putFloat(x);
-		buff.putFloat(y);		
+		buff.putFloat(y);
+		buff.putFloat(isOneWay);
 		return bytes;
 	}  
 	
@@ -916,8 +917,9 @@ public class Commands {
 			buff.get(strbytes);
 			portalName = new String(strbytes);
 			x = buff.getFloat();
-			y = buff.getFloat();    			
-			listener.commandAddPortal(id, placeId, portalName, x, y);
+			y = buff.getFloat();    	
+			int isOneWay = buff.getInt();  
+			listener.commandAddPortal(id, placeId, portalName, x, y, isOneWay);
 			break;
 		case CHANGEQUESTSTATUS:
 			int questId = buff.getInt();

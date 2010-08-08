@@ -723,7 +723,7 @@ public class THGkeeper extends BasicGameState implements ComponentListener {
     				}
     				
     				@Override				
-    		        public void commandAddPortal(int id, int placeId, String portalName, float x, float y){
+    		        public void commandAddPortal(int id, int placeId, String portalName, float x, float y, int isOneWay){
     		        					
     		        }
     				

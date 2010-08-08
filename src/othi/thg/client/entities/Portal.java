@@ -7,10 +7,17 @@ package othi.thg.client.entities;
  */
 public class Portal extends THGObject {
     
-    public Portal(int id, String name, float x, float y) {
+	private boolean oneWay = false;
+	
+    public Portal(int id, String name, float x, float y, boolean oneWay) {
     	myId = id;
     	this.name = name;
     	posX = x;
     	posY = y;
+    	this.oneWay = oneWay;
     }
+
+	public boolean isOneWay() {
+		return oneWay;
+	}
 }

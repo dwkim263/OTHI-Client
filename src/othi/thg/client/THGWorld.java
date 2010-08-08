@@ -774,7 +774,13 @@ public class THGWorld extends BasicGameState {
 		float[] newLoc = Commands.step(playerSprite.getPosX(), playerSprite.getPosY(), inputDirection);
 		if (THGTerrain.get().isPortalAt(newLoc[0], newLoc[1])) {
 			int id = THGTerrain.get().getTileId(newLoc[0], newLoc[1]);
-			sendToServer(Commands.portalCommand(getMyID(), THGClient.get().getPlaceId(), portals.get(id).getName()));
+			Portal portal = portals.get(id);
+			if (!portal.isOneWay()) {
+				sendToServer(Commands.portalCommand(getMyID(), THGClient.get().getPlaceId(), portal.getName()));
+			} else {				
+				sendToServer(Commands.moveForwardCommand(getMyID(), THGClient.get().getPlaceId(), playerSprite.getPosX(), playerSprite.getPosY(), inputDirection));
+				playerSprite.walk(inputDirection);				
+			}
 		} else {
 			sendToServer(Commands.moveForwardCommand(getMyID(), THGClient.get().getPlaceId(), playerSprite.getPosX(), playerSprite.getPosY(), inputDirection));
 			playerSprite.walk(inputDirection);
@@ -1478,7 +1484,7 @@ public class THGWorld extends BasicGameState {
 				public void commandClearDialogueHistory(int id){
 
 				}
-
+				
 				@Override
 				public void commandClearMsgLog(int id){
 					controlPanel.getMessageLogArea().clearTexts();                       
@@ -1862,10 +1868,14 @@ public class THGWorld extends BasicGameState {
 				}
 				
 				@Override				
-		        public void commandAddPortal(int id, int placeId, String portalName, float x, float y) {
+		        public void commandAddPortal(int id, int placeId, String portalName, float x, float y, int isOneWay) {
 					THGTerrain.get().setTileId(x, y, id);
 					if (!portals.containsKey(id)) {
-						portals.put(id, new Portal(id, portalName, x, y));
+						boolean oneWay = false;
+						if (isOneWay == 1) {
+							oneWay = true;
+						}
+						portals.put(id, new Portal(id, portalName, x, y, oneWay));
 					}
 		        }				
 				
